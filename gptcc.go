@@ -27,7 +27,9 @@ func main() {
 					Content: `
 					Input is a commit message. Output is a commit message with a Conventional Commits (CC) prefix.
      
-					If the input already has a CC prefix just return it, otherwise add it. Do not otherwise modify the input unless the prefix looks like a scope is already there.
+					If the input already has a CC prefix just return it, otherwise add it.
+					Do not otherwise modify the input unless the prefix looks like a scope is already there.
+					Try to infer the scope from the message.
 			   
 					Do not output anything other than the possibly modified commit message.
 					`,
