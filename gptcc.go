@@ -4,21 +4,25 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/alecthomas/kong"
 	openai "github.com/sashabaranov/go-openai"
 )
 
 var cli struct {
-	Token   string   `env:"OPENAI_API_KEY" help:"OpenAI API token." required:""`
-	Message []string `arg:"" help:"Commit message to convert to Conventional Commits."`
+	Timeout time.Duration `default:"10s" help:"Timeout for the request."`
+	Token   string        `env:"OPENAI_API_KEY" help:"OpenAI API token." required:""`
+	Message []string      `arg:"" help:"Commit message to convert to Conventional Commits."`
 }
 
 func main() {
 	kctx := kong.Parse(&cli)
 	client := openai.NewClient(cli.Token)
+	ctx, cancel := context.WithTimeout(context.Background(), cli.Timeout)
+	defer cancel()
 	resp, err := client.CreateChatCompletion(
-		context.Background(),
+		ctx,
 		openai.ChatCompletionRequest{
 			Model: openai.GPT4,
 			Messages: []openai.ChatCompletionMessage{
